@@ -1,0 +1,31 @@
+# terraform-k8s-provider.yml
+# Example CI/CD pipeline to set up Terraform with the Kubernetes provider using local kubeconfig
+
+steps:
+  - name: Checkout code
+    run: git clone $REPO_URL .
+
+  - name: Set up Terraform
+    run: |
+      wget https://releases.hashicorp.com/terraform/1.7.5/terraform_1.7.5_linux_amd64.zip
+      unzip terraform_1.7.5_linux_amd64.zip
+      sudo mv terraform /usr/local/bin/
+      terraform version
+
+  - name: Install kubectl
+    run: |
+      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      chmod +x kubectl
+      sudo mv kubectl /usr/local/bin/
+      kubectl version --client
+
+  - name: Configure kubeconfig
+    run: |
+      mkdir -p ~/.kube
+      echo "$KUBECONFIG_CONTENT" > ~/.kube/config
+
+  - name: Terraform Init
+    run: terraform init
+
+  - name: Terraform Plan
+    run: terraform plan 
