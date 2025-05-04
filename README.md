@@ -56,6 +56,7 @@ This project demonstrates how to use the [Kubernetes provider](https://registry.
 
 ### Developer Commands
 - See `devcommand.log` for example commands to:
+  - Nothing in here is secure just dev
   - Run a MySQL client pod in Kubernetes
   - Exec into MySQL or client pods
   - Port-forward MySQL service to localhost
