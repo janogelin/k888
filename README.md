@@ -61,6 +61,14 @@ This project demonstrates how to use the [Kubernetes provider](https://registry.
   - Exec into MySQL or client pods
   - Port-forward MySQL service to localhost
 
+### Prometheus Operator Install Script
+- **install-prometheus-operator.sh**: Bash script to download and apply the Prometheus Operator manifest from the official kube-prometheus repository.
+- Usage:
+  ```sh
+  bash install-prometheus-operator.sh
+  ```
+  This will download the latest Prometheus Operator manifest and apply it to your Kubernetes cluster using kubectl. For more details and the full monitoring stack, see the [kube-prometheus project](https://github.com/prometheus-operator/kube-prometheus).
+
 ### Kafka Sizing Requirements
 - See `kafkaplan/kafka_sizing_requirements.md` for a comprehensive table of recommended Kafka sizing and configuration parameters, including:
   - Workload estimates (message size, producers, consumers, topics, partitions)
