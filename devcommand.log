@@ -1,4 +1,5 @@
- kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword
+kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword
 kubectl exec -it mysql
 kubectl exec -it mysql-client -- mysql -h mysql -ppassword
 kubectl port-forward svc/mysql 3306:3306
+kubectl exec -it busybox -- sh
