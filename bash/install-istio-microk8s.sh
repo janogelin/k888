@@ -24,6 +24,14 @@ error_exit() {
   exit 1
 }
 
+# Ensure 'istio-system' namespace exists
+if ! microk8s kubectl get namespace istio-system >/dev/null 2>&1; then
+  echo "[INFO] 'istio-system' namespace does not exist. Creating it..."
+  microk8s kubectl create namespace istio-system || error_exit "Failed to create 'istio-system' namespace."
+else
+  echo "[INFO] 'istio-system' namespace already exists."
+fi
+
 # 1. Enable Istio, Ingress, and DNS in MicroK8s
 # These are required for service mesh, external access, and service discovery.
 echo "[INFO] Enabling Istio, Ingress, and DNS in MicroK8s..."
