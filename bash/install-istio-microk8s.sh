@@ -129,4 +129,9 @@ if [ "$HTTP_STATUS" = "200" ]; then
   echo "[SUCCESS] Bookinfo app is accessible at $GATEWAY_URL (HTTP 200)"
 else
   echo "[WARNING] Bookinfo app test returned HTTP $HTTP_STATUS. Check deployment and logs."
-fi 
+fi
+
+# Example usage for waiting for a specific pod to complete:
+# export POD_NAME="your-pod-name"
+# export POD_NAMESPACE="your-namespace"
+# source "$(dirname "$0")/wait-for-pod-complete.sh" 
