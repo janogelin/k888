@@ -24,6 +24,27 @@ error_exit() {
   exit 1
 }
 
+# Function to wait for all pods in all namespaces to be Running or Completed
+wait_for_all_pods_ready() {
+  ATTEMPTS=0
+  MAX_ATTEMPTS=30
+  SLEEP_SECONDS=10
+  echo "[INFO] Waiting for all pods to be Running or Completed..."
+  while true; do
+    NOT_READY=$(microk8s kubectl get pods -A --no-headers | grep -vE 'Running|Completed|STATUS' | wc -l)
+    if [ "$NOT_READY" -eq 0 ]; then
+      echo "[INFO] All pods are Running or Completed."
+      break
+    fi
+    ATTEMPTS=$((ATTEMPTS+1))
+    if [ "$ATTEMPTS" -ge "$MAX_ATTEMPTS" ]; then
+      error_exit "Timeout waiting for all pods to be Running or Completed."
+    fi
+    echo "[INFO] Waiting... ($ATTEMPTS/$MAX_ATTEMPTS)"
+    sleep $SLEEP_SECONDS
+  done
+}
+
 # Ensure 'istio-system' namespace exists
 if ! microk8s kubectl get namespace istio-system >/dev/null 2>&1; then
   echo "[INFO] 'istio-system' namespace does not exist. Creating it..."
@@ -50,7 +71,7 @@ microk8s kubectl wait --for=condition=Available --timeout=180s deployment/istio-
 echo "[INFO] Current pod status:"
 microk8s kubectl get pods -A
 
-echo "[INFO] All required components are enabled and running."
+wait_for_all_pods_ready
 
 # 2. Label the 'default' namespace for automatic Istio sidecar injection
 # This ensures that pods in the namespace get the Envoy sidecar automatically.
@@ -81,6 +102,7 @@ echo "[INFO] Bookinfo Gateway applied."
 # 5. Get the Ingress IP and Port
 # Try to get the external IP, fallback to ClusterIP if not available (common in local setups)
 echo "[INFO] Retrieving Istio ingress gateway IP and port..."
+wait_for_all_pods_ready
 INGRESS_HOST=$(microk8s kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 if [ -z "$INGRESS_HOST" ]; then
   # Fallback to ClusterIP for local environments
