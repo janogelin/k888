@@ -35,6 +35,7 @@ fi
 # 1. Enable Istio, Ingress, and DNS in MicroK8s
 # These are required for service mesh, external access, and service discovery.
 echo "[INFO] Enabling Istio, Ingress, and DNS in MicroK8s..."
+microk8s enable community || error_exit "Failed to enable required MicroK8s community addons."
 microk8s enable dns ingress istio || error_exit "Failed to enable required MicroK8s addons."
 
 echo "[INFO] Waiting for Istio control plane and ingress gateway to be ready..."
