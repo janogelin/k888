@@ -32,7 +32,7 @@ else
 fi
 
 # 2. Create PersistentVolume YAML
-cat <<EOF | microk8s kubectl apply -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -43,6 +43,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
+  storageClassName: microk8s-hostpath
   hostPath:
     path: "$WEB_DIR"
     type: DirectoryOrCreate
@@ -51,7 +52,7 @@ EOF
 echo "[INFO] PersistentVolume $PV_NAME applied."
 
 # 3. Create PersistentVolumeClaim YAML (default storage class)
-cat <<EOF | microk8s kubectl apply -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -69,10 +70,10 @@ EOF
 echo "[INFO] PersistentVolumeClaim $PVC_NAME applied."
 
 # 4. Describe the PVC
-microk8s kubectl describe pvc $PVC_NAME -n $NAMESPACE
+kubectl describe pvc $PVC_NAME -n $NAMESPACE
 
 # 5. Deploy BusyBox pod with PVC mounted
-cat <<EOF | microk8s kubectl apply -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
@@ -99,7 +100,7 @@ EOF
 echo "[INFO] BusyBox debug pod deployed. Waiting for pod to be ready..."
 
 # 6. Wait for pod to be running
-microk8s kubectl wait --for=condition=Ready pod/$POD_NAME --timeout=60s || {
+kubectl wait --for=condition=Ready pod/$POD_NAME --timeout=60s || {
   echo "[ERROR] Pod did not become ready in time." >&2
   exit 1
 }
@@ -107,9 +108,9 @@ microk8s kubectl wait --for=condition=Ready pod/$POD_NAME --timeout=60s || {
 echo "[INFO] Attaching to BusyBox pod. Type 'exit' to leave the shell."
 
 # 7. Attach to the pod
-microk8s kubectl exec -it $POD_NAME -- sh
+kubectl exec -it $POD_NAME -- sh
 
 echo "[INFO] To clean up, run:"
-echo "  microk8s kubectl delete pod $POD_NAME"
-echo "  microk8s kubectl delete pvc $PVC_NAME"
-echo "  microk8s kubectl delete pv $PV_NAME" 
+echo "  kubectl delete pod $POD_NAME"
+echo "  kubectl delete pvc $PVC_NAME"
+echo "  kubectl delete pv $PV_NAME" 
