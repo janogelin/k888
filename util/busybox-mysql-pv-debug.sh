@@ -19,7 +19,7 @@ set -e
 PVC_NAME="mysql-pvc-debug"
 POD_NAME="busybox-mysql-debug"
 NAMESPACE="default"
-STORAGE_CLASS="manual"
+STORAGE_CLASS="microk8s-hostpath"
 
 # 1. Create a PersistentVolumeClaim if it doesn't exist
 cat <<EOF | microk8s kubectl apply -f -
