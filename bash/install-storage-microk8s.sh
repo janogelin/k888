@@ -123,7 +123,7 @@ microk8s kubectl apply -f "$TEST_POD_YAML" || error_exit "Failed to apply test p
 # Wait for test pod to complete
 export POD_NAME="mysql-pv-test"
 export POD_NAMESPACE="default"
-source "$(dirname "$0")/wait-for-pod-complete.sh"
+#source "$(dirname "$0")/wait-for-pod-complete.sh"
 
 # Show pod logs
 microk8s kubectl logs mysql-pv-test || true
@@ -136,7 +136,7 @@ microk8s kubectl delete pvc mysql-pvc-test || true
 # microk8s kubectl delete pv mysql-pv || true
 
 # Remove temp files
-echo "[INFO] Cleaning up temp files..."
-rm -f "$PV_YAML" "$TEST_POD_YAML"
+#echo "[INFO] Cleaning up temp files..."
+#rm -f "$PV_YAML" "$TEST_POD_YAML"
 
 echo "[INFO] Storage setup and test complete." 
